@@ -1,5 +1,5 @@
 /*******************************************************************************
-* 
+*
 * Purpose: Assignment #3 solution.
 *
 * Author: Kevin Browne
@@ -10,16 +10,18 @@
 #include <ctype.h>
 
 #define COUNT_SIZE 26
+#define BUFFER_SIZE 1024
 
 int main()
 {
-  char buffer[1024], input, curchar;
+  char buffer[BUFFER_SIZE], input, curchar;
   int i = 0, count[COUNT_SIZE];
   int other = 0;
+  int spaces = 0;
 
   // request and read in the string from the user
   printf("Enter text for analysis: ");
-  while ( (input = getchar()) != '\n' ) {
+  while (((input = getchar()) != '\n') && (i < (BUFFER_SIZE - 1))) {
     buffer[i++] = input;
   }
   buffer[i] = '\0';
@@ -35,6 +37,7 @@ int main()
   // the right index using 65 as an 'offset'.
   for (i = 0; i < strlen(buffer); i++) {
     curchar = toupper(buffer[i]);
+    if (curchar == ' ') spaces++;
     if (curchar >= 65 && curchar <= 90) count[curchar - 65]++;
     else other++;
   }
@@ -45,13 +48,14 @@ int main()
   printf("*****************************************\n");
   for (i = 0; i < COUNT_SIZE; i++) {
     printf("%-10c%-15d%-15.2f\n", i + 65,
-                               count[i],
-                               (((float) count[i]) / strlen(buffer)) * 100);
+      count[i],
+      (((float)count[i]) / strlen(buffer)) * 100);
   }
   // Output the number of other characters
-  printf("%-10s%-15d%-15.2f\n","Other",
-                              other,
-                              (((float) count[i]) / strlen(buffer)) * 100);
+  printf("%-10s%-15d%-15.2f\n", "Other",
+    other,
+    (((float)other) / (strlen(buffer))) * 100);
+  printf("\nTotal spaces: %d\n", spaces);
 
   // Find the max and min occuring character in the string, in particular the
   // position in the count array of each character
@@ -77,4 +81,36 @@ int main()
   printf("The least frequently occurring letter is %c.\n", min_pos + 65);
 
   return 0;
+}
+
+// Returns the position in array count of the associated letter that 
+// occurred the maximum number of times
+int max(int count[])
+{
+  int max = count[0];
+  int max_pos = 0;
+  for (int i = 0; i < 26; i++) {
+    if (count[i] > max)
+    {
+      max_pos = i;
+      max = count[i];
+    }
+  }
+  return max_pos;
+}
+
+// Returns the position in array count of the associated letter that 
+// occurred the minimum number of times
+int min(int count[])
+{
+  int min = count[0];
+  int min_pos = 0;
+  for (int i = 0; i < 26; i++) {
+    if (count[i] < min)
+    {
+      min_pos = i;
+      min = count[i];
+    }
+  }
+  return min_pos;
 }
